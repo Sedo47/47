@@ -143,12 +143,12 @@
     {
         "iconUrl": "https://www.google.com/s2/favicons?domain=aniworld.to&sz=%size%",
         "apiVersion": 1,
-        "repositoryUrl": "https://github.com/hexated/cloudstream-extensions-hexated",
+        "repositoryUrl": "https://github.com/Sedo47/47",
         "fileSize": 16736,
         "status": 1,
         "language": "de",
         "authors": [
-            "Hexated"
+            "47"
         ],
         "tvTypes": [
             "AnimeMovie",
@@ -158,7 +158,7 @@
         "version": 6,
         "internalName": "Aniworld",
         "description": "Include: Serienstream",
-        "url": "https://raw.githubusercontent.com/hexated/cloudstream-extensions-hexated/builds/Aniworld.cs3",
+        "url": "https://raw.githubusercontent.com/Sedo47/47/builds/Aniworld.cs3",
         "name": "Aniworld"
     },
     {
