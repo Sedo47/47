@@ -108,75 +108,60 @@ open class Aniworld : MainAPI() {
         }
     }
 
-override suspend fun loadLinks(
-    data: String,
-    isCasting: Boolean,
-    subtitleCallback: (SubtitleFile) -> Unit,
-    callback: (ExtractorLink) -> Unit
-): Boolean {
-    val document = app.get(data).document
-    document.select("div.hosterSiteVideo ul li").map {
-        Triple(
-            it.attr("data-lang-key"),
-            it.attr("data-link-target"),
-            it.select("h4").text()
-        )
-    }.filter {
-        it.third != "Vidoza"
-    }.apmap {
-        val redirectUrl = app.get(fixUrl(it.second)).url
-        val lang = it.first.getLanguage(document)
-        val name = "${it.third} [${lang}]"
-        if (it.third == "VOE") {
-            Voe().getUrl(redirectUrl, data, subtitleCallback) { link ->
-                callback.invoke(
-                    ExtractorLink(
-                        name,
-                        name,
-                        link.url,
-                        link.referer,
-                        link.quality,
-                        link.type,
-                        link.headers,
-                        link.extractorData
+    override suspend fun loadLinks(
+        data: String,
+        isCasting: Boolean,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ): Boolean {
+        val document = app.get(data).document
+        document.select("div.hosterSiteVideo ul li").map {
+            Triple(
+                it.attr("data-lang-key"),
+                it.attr("data-link-target"),
+                it.select("h4").text()
+            )
+        }.filter {
+            it.third != "Vidoza"
+        }.apmap {
+            val redirectUrl = app.get(fixUrl(it.second)).url
+            val lang = it.first.getLanguage(document)
+            val name = "${it.third} [${lang}]"
+            if (it.third == "VOE") {
+                Voe().getUrl(redirectUrl, data, subtitleCallback) { link ->
+                    callback.invoke(
+                        ExtractorLink(
+                            name,
+                            name,
+                            link.url,
+                            link.referer,
+                            link.quality,
+                            link.type,
+                            link.headers,
+                            link.extractorData
+                        )
                     )
-                )
-            }
-        } else if (it.third == "SpeedFiles") {
-            SpeedFiles().getUrl(redirectUrl, data, subtitleCallback) { link ->
-                callback.invoke(
-                    ExtractorLink(
-                        name,
-                        name,
-                        link.url,
-                        link.referer,
-                        link.quality,
-                        link.type,
-                        link.headers,
-                        link.extractorData
+                }
+            } else {
+                loadExtractor(redirectUrl, data, subtitleCallback) { link ->
+                    callback.invoke(
+                        ExtractorLink(
+                            name,
+                            name,
+                            link.url,
+                            link.referer,
+                            link.quality,
+                            link.type,
+                            link.headers,
+                            link.extractorData
+                        )
                     )
-                )
-            }
-        } else {
-            loadExtractor(redirectUrl, data, subtitleCallback) { link ->
-                callback.invoke(
-                    ExtractorLink(
-                        name,
-                        name,
-                        link.url,
-                        link.referer,
-                        link.quality,
-                        link.type,
-                        link.headers,
-                        link.extractorData
-                    )
-                )
+                }
             }
         }
-    }
-    return true
-}
 
+        return true
+    }
 
     private fun Element.toSearchResult(): AnimeSearchResponse? {
         val href = fixUrlNull(this.selectFirst("a")?.attr("href")) ?: return null
