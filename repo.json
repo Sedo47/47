@@ -1,0 +1,8 @@
+{
+  "name": "47",
+  "description": "Test",
+  "manifestVersion": 1,
+  "pluginLists": [
+    "https://raw.githubusercontent.com/Sedo47/47/refs/heads/builds/plugins.json"
+  ]
+}
